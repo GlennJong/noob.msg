@@ -3,9 +3,9 @@ General = {
   data: []
 }
 
-function Msg() {
+function Msg(user) {
+  this.user = user
   this.$elem = this.buildElem()
-  this.itemArr = []
   this.bindEvents()
 }
 Msg.prototype.buildElem = function() {
@@ -16,6 +16,7 @@ Msg.prototype.buildElem = function() {
   $input.setAttribute('id', 'input')
   $msgContent.setAttribute('id', 'msgContent')
   $container.setAttribute('id', 'container')
+  $container.setAttribute('name', this.user)
   $container.append($input)
   $container.append($msgContent)
 
@@ -25,7 +26,8 @@ Msg.prototype.bindEvents = function() {
   var that = this
   var $input = that.$elem.querySelector('#input')
   $input.addEventListener("keydown", function (e) {
-      if (e.keyCode === 13 && input.value != '') {
+      if (e.keyCode === 13 && $input.value != '') {
+
         that.send($input.value)
         // Clear input
         $input.value = ''
@@ -33,32 +35,49 @@ Msg.prototype.bindEvents = function() {
   });
 }
 Msg.prototype.send = function(title) {
-  var that = this
 
   // Push Data
-  var $item = new MsgItem(title)
+  var $item = new MsgItem(title, this.user)
   General.data.push($item)
 
   console.log(General.data)
 
   // Show the msg
-  that.showMsg($item)
+  this.showMsg($item)
 }
 Msg.prototype.showMsg = function(item) {
-  var $msgContent = this.$elem.querySelector('#msgContent')
+  // var $msgContent = this.$elem.querySelector('#msgContent')
+  // var $msgContent = this.$elem.querySelector('#msgContent')
+  var $msgBox   = document.getElementById('msgBox')
+  // var $itemElem = '<div class="item">' + item.content + '</div>'
   var $itemElem = document.createElement('div')
+
+
   $itemElem.textContent = item.content
 
-  $msgContent.append($itemElem)
+  // $msgContent.appendChild($itemElem)
+  $msgBox.appendChild($itemElem)
 }
 
 // MsgItem
-function MsgItem(title) {
+function MsgItem(title, user) {
   // this.$elem = this.buildElem(title)
+  this.username = user
   this.content = title
   this.id = General.id ++
   return this
 }
+
+function MsgBox() {
+  this.$elem = this.buildElem()
+}
+MsgBox.prototype.buildElem = function() {
+  var $container  = document.createElement('div')
+  $container.setAttribute('id', 'msgBox')
+
+  return $container
+}
+
 
 // LocalStorage
 // function LocalStorage() {
@@ -75,8 +94,13 @@ function MsgItem(title) {
 
 
 function App() {
-  var item = new Msg()
-  document.body.append(item.$elem)
+  var user1 = new Msg('Peter')
+  var user2 = new Msg('Frank')
+  document.body.append(user1.$elem)
+  document.body.append(user2.$elem)
+
+  var msgBox = new MsgBox()
+  document.body.append(msgBox.$elem)
 }
 
 window.app = new App()
