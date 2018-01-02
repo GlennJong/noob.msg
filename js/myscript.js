@@ -4,27 +4,42 @@ General = {
 }
 
 function Msg(user) {
-  this.user = user
+  // Define basic
+  this.user  = user
+  this.msgId = General.id 
+  this.msgView = new MsgView(this.user)
   this.$elem = this.buildElem()
+
+  // Bind events
   this.bindEvents()
 }
 Msg.prototype.buildElem = function() {
   var $container  = document.createElement('div')
-  var $msgContent = document.createElement('div')
   var $input      = document.createElement('input')
-  $input.setAttribute('type', 'text')
-  $input.setAttribute('id', 'input')
-  $msgContent.setAttribute('id', 'msgContent')
-  $container.setAttribute('id', 'container')
+  var $userName   = document.createElement('h1')
+  var $msgView    = this.msgView.$elem
+
+  // container part
+  $container.setAttribute('id','container')
+  $container.setAttribute('class','msg-container')
   $container.setAttribute('name', this.user)
+
+  // input part
+  $input.setAttribute('type', 'text')
+  $input.setAttribute('id',   'msgInput')
+  $input.setAttribute('class','msg-input')
+
+  // msgContent part
+  $userName.textContent = this.user
+  $container.append($msgView)
+  $container.append($userName)
   $container.append($input)
-  $container.append($msgContent)
 
   return $container
 }
 Msg.prototype.bindEvents = function() {
   var that = this
-  var $input = that.$elem.querySelector('#input')
+  var $input = that.$elem.querySelector('#msgInput')
   $input.addEventListener("keydown", function (e) {
       if (e.keyCode === 13 && $input.value != '') {
 
@@ -35,47 +50,65 @@ Msg.prototype.bindEvents = function() {
   });
 }
 Msg.prototype.send = function(title) {
-
   // Push Data
   var $item = new MsgItem(title, this.user)
   General.data.push($item)
 
-  console.log(General.data)
+  // New Msg ID
+  this.msgId ++
 
-  // Show the msg
-  this.showMsg($item)
-}
-Msg.prototype.showMsg = function(item) {
-  // var $msgContent = this.$elem.querySelector('#msgContent')
-  // var $msgContent = this.$elem.querySelector('#msgContent')
-  var $msgBox   = document.getElementById('msgBox')
-  // var $itemElem = '<div class="item">' + item.content + '</div>'
-  var $itemElem = document.createElement('div')
-
-
-  $itemElem.textContent = item.content
-
-  // $msgContent.appendChild($itemElem)
-  $msgBox.appendChild($itemElem)
+  // Update Msg
+  this.msgView.update()
 }
 
 // MsgItem
 function MsgItem(title, user) {
-  // this.$elem = this.buildElem(title)
   this.username = user
   this.content = title
   this.id = General.id ++
   return this
 }
 
-function MsgBox() {
+// MsgShow
+function MsgView(user) {
   this.$elem = this.buildElem()
+  // debugger
+
+  this.timeUpdate()
 }
-MsgBox.prototype.buildElem = function() {
+MsgView.prototype.buildElem = function() {
   var $container  = document.createElement('div')
-  $container.setAttribute('id', 'msgBox')
+  $container.setAttribute('id', 'msgWrapper')
+  $container.setAttribute('class', 'msg-wrapper')
 
   return $container
+}
+MsgView.prototype.timeUpdate = function() {
+  var that = this
+  setInterval(that.update, 5000)
+}
+MsgView.prototype.update = function() {
+  var id = General.id
+  var data = General.data
+  var last = data.length - 1
+  var lastContent = data[last].content
+  var msgId = data[last].id
+
+  // Add new Msg  
+  var $msgWrapper = this.$elem
+  var $newMsg = this.newMsg(lastContent)
+  $msgWrapper.appendChild($newMsg)
+
+
+}
+MsgView.prototype.newMsg = function(content) {
+  var msg = document.createElement('div')
+  msg.setAttribute('class', 'msg-item')
+  msg.textContent = content
+
+  console.log('work')
+
+  return msg
 }
 
 
@@ -94,13 +127,13 @@ MsgBox.prototype.buildElem = function() {
 
 
 function App() {
-  var user1 = new Msg('Peter')
-  var user2 = new Msg('Frank')
-  document.body.append(user1.$elem)
-  document.body.append(user2.$elem)
+  this.user1 = new Msg('Peter')
+  // var user2 = new Msg('Frank')
+  document.body.append(this.user1.$elem)
+  // document.body.append(user2.$elem)
 
-  var msgBox = new MsgBox()
-  document.body.append(msgBox.$elem)
+  // var msgBox = new MsgBox()
+  // document.body.append(msgBox.$elem)
 }
 
 window.app = new App()
