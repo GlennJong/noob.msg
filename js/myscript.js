@@ -74,7 +74,7 @@ function MsgView(user) {
   this.$elem = this.buildElem()
   // debugger
 
-  this.timeUpdate()
+  // this.timeUpdate()
 }
 MsgView.prototype.buildElem = function() {
   var $container  = document.createElement('div')
@@ -96,10 +96,13 @@ MsgView.prototype.update = function() {
 
   // Add new Msg  
   var $msgWrapper = this.$elem
+  var $msgWrapper = document.querySelectorAll('.msg-wrapper')
   var $newMsg = this.newMsg(lastContent)
-  $msgWrapper.appendChild($newMsg)
 
-
+  for (var i = 0, j = $msgWrapper.length; i < j; i++) {
+    var newMsg = $newMsg
+    $msgWrapper[i].appendChild(newMsg)
+  }
 }
 MsgView.prototype.newMsg = function(content) {
   var msg = document.createElement('div')
@@ -128,9 +131,9 @@ MsgView.prototype.newMsg = function(content) {
 
 function App() {
   this.user1 = new Msg('Peter')
-  // var user2 = new Msg('Frank')
+  var user2 = new Msg('Frank')
   document.body.append(this.user1.$elem)
-  // document.body.append(user2.$elem)
+  document.body.append(user2.$elem)
 
   // var msgBox = new MsgBox()
   // document.body.append(msgBox.$elem)
