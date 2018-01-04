@@ -72,8 +72,7 @@ function MsgItem(title, user) {
 // MsgShow
 function MsgView(user) {
   this.$elem = this.buildElem()
-  // debugger
-
+  this.id = General.id
   this.timeUpdate()
 }
 MsgView.prototype.buildElem = function() {
@@ -84,8 +83,10 @@ MsgView.prototype.buildElem = function() {
   return $container
 }
 MsgView.prototype.timeUpdate = function() {
-  var that = this
-  setInterval(that.update, 5000)
+  setInterval(this.update.bind(this), 5000)
+  if (this.id != General.id) {
+    console.log('work')
+  }
 }
 MsgView.prototype.update = function() {
   var id = General.id
@@ -98,7 +99,9 @@ MsgView.prototype.update = function() {
   var $msgWrapper = this.$elem
   var $msgWrapper = document.querySelectorAll('.msg-wrapper')
 
+  // Put the new Msg
   for (var i = 0, j = $msgWrapper.length; i < j; i++) {
+    console.log(this)
     var $newMsg = this.newMsg(lastContent)
     $msgWrapper[i].appendChild($newMsg)
   }
@@ -107,8 +110,6 @@ MsgView.prototype.newMsg = function(content) {
   var msg = document.createElement('div')
   msg.setAttribute('class', 'msg-item')
   msg.textContent = content
-
-  console.log('work')
 
   return msg
 }
