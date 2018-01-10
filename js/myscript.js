@@ -19,17 +19,17 @@ Msg.prototype.buildElem = function() {
   var $userName   = document.createElement('h1')
   var $msgView    = this.msgView.$elem
 
-  // container part
+  // container
   $container.setAttribute('id','container')
   $container.setAttribute('class','msg-container')
   $container.setAttribute('name', this.user)
 
-  // input part
+  // input
   $input.setAttribute('type', 'text')
   $input.setAttribute('id',   'msgInput')
   $input.setAttribute('class','msg-input')
 
-  // msgContent part
+  // msgContent
   $userName.textContent = this.user
   $container.append($msgView)
   $container.append($userName)
@@ -63,17 +63,24 @@ Msg.prototype.send = function(title) {
 
 // MsgItem
 function MsgItem(title, user) {
-  this.username = user
+  this.user = user
   this.content = title
   this.id = General.id ++
   return this
 }
 
-// MsgShow
+// MsgView
 function MsgView(user) {
   this.$elem = this.buildElem()
   this.id = General.id
-  this.timeUpdate()
+
+  // temp
+  this.user = user
+
+  console.log(this.user)
+
+  // Time Update
+  // this.timeUpdate()
 }
 MsgView.prototype.buildElem = function() {
   var $container  = document.createElement('div')
@@ -93,6 +100,7 @@ MsgView.prototype.update = function() {
   var data = General.data
   var last = data.length - 1
   var lastContent = data[last].content
+  var lastUser = data[last].user
   var msgId = data[last].id
 
   // Add new Msg  
@@ -101,15 +109,20 @@ MsgView.prototype.update = function() {
 
   // Put the new Msg
   for (var i = 0, j = $msgWrapper.length; i < j; i++) {
-    console.log(this)
-    var $newMsg = this.newMsg(lastContent)
+    var $newMsg = this.newMsg(lastContent, lastUser)
     $msgWrapper[i].appendChild($newMsg)
   }
 }
-MsgView.prototype.newMsg = function(content) {
+MsgView.prototype.newMsg = function(lastContent, lastUser) {
   var msg = document.createElement('div')
+
+  // console.log(lastUser)
+  console.log(this.user)
+  if(this.user == lastUser) {
+    // msg.setAttribute('')
+  }
   msg.setAttribute('class', 'msg-item')
-  msg.textContent = content
+  msg.textContent = lastContent
 
   return msg
 }
