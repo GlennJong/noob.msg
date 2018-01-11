@@ -139,8 +139,8 @@ MsgView.prototype.newMsg = function(lastContent, lastUser, msgWrapperUser) {
 function App() {
   var user1 = new Msg('Peter')
   var user2 = new Msg('Frank')
-  document.body.append(user1.$elem)
-  document.body.append(user2.$elem)
+  document.getElementById('msg').append(user1.$elem)
+  document.getElementById('msg').append(user2.$elem)
 
   // var msgBox = new MsgBox()
   // document.body.append(msgBox.$elem)

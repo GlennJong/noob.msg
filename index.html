@@ -8,32 +8,29 @@
       margin: 0;
       padding: 0;
     }
-    #container {
-      float: left;
-      border: 1px solid #CCC;
-      padding: 12px;
-      box-sizing: border-box;
-    }
-    #msgBox {
-      clear: both;
-      border: 1px solid hsl(0, 0%, 75%);
-      padding: 12px;
-      width: 300px;
-      height: 500px;
-      background: hsl(0, 0%, 95%);
-      box-sizing: border-box;
+    .msg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
     }
     .msg-container {
       float: left;
       position: relative;
-      width: 50%;
-      height: 100%;
+      border: 1px solid hsl(0, 0%, 75%);
+      margin-right: 24px;
+      width: 400px;
+      height: 500px;
+      box-sizing: border-box;
     }
     .msg-container h1 {
       display: none;
     }
     .msg-wrapper {
-
+      padding: 12px;
+      overflow: hidden;
+      box-sizing: border-box;
     }
     .msg-wrapper .msg-item {
       clear: both;
@@ -44,11 +41,30 @@
     }
     .msg-input {
       position: absolute;
+      left: 0;
       bottom: 0;
+      border: 0;
+      border-top: 1px solid hsl(0, 0%, 75%);
+      padding: 4px 6px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .msg-item {
+      margin-bottom: 8px;
+      padding: 4px 8px;
+      border-radius: 12px 12px 12px 0;
+      background: hsl(0, 0%, 65%);
+      color: #FFF;
+    }
+    .msg-self {
+      border-radius: 12px 12px 0 12px;
+      background: hsl(210, 85%, 55%);
+      color: #FFF;
     }
   </style>
 </head>
 <body>
+  <div id="msg" class="msg"></div>
   <script src="js/myscript.js"></script>
 </body>
 </html>
