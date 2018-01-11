@@ -115,9 +115,10 @@ MsgView.prototype.update = function() {
 }
 MsgView.prototype.newMsg = function(lastContent, lastUser) {
   var msg = document.createElement('div')
+  var that = this
 
   // console.log(lastUser)
-  console.log(this.user)
+  console.log(that.user)
   if(this.user == lastUser) {
     // msg.setAttribute('')
   }
