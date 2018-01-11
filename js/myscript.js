@@ -22,7 +22,7 @@ Msg.prototype.buildElem = function() {
   // container
   $container.setAttribute('id','container')
   $container.setAttribute('class','msg-container')
-  $container.setAttribute('name', this.user)
+  // $container.setAttribute('name', this.user)
 
   // input
   $input.setAttribute('type', 'text')
@@ -71,30 +71,26 @@ function MsgItem(title, user) {
 
 // MsgView
 function MsgView(user) {
-  this.$elem = this.buildElem()
+  this.$elem = this.buildElem(user)
   this.id = General.id
-
-  // temp
-  this.user = user
-
-  console.log(this.user)
 
   // Time Update
   // this.timeUpdate()
 }
-MsgView.prototype.buildElem = function() {
+MsgView.prototype.buildElem = function(user) {
   var $container  = document.createElement('div')
   $container.setAttribute('id', 'msgWrapper')
   $container.setAttribute('class', 'msg-wrapper')
+  $container.setAttribute('user', user)
 
   return $container
 }
-MsgView.prototype.timeUpdate = function() {
-  setInterval(this.update.bind(this), 5000)
-  if (this.id != General.id) {
-    console.log('work')
-  }
-}
+// MsgView.prototype.timeUpdate = function() {
+//   setInterval(this.update.bind(this), 5000)
+//   if (this.id != General.id) {
+//     console.log('work')
+//   }
+// }
 MsgView.prototype.update = function() {
   var id = General.id
   var data = General.data
@@ -104,26 +100,23 @@ MsgView.prototype.update = function() {
   var msgId = data[last].id
 
   // Add new Msg  
-  var $msgWrapper = this.$elem
   var $msgWrapper = document.querySelectorAll('.msg-wrapper')
 
   // Put the new Msg
   for (var i = 0, j = $msgWrapper.length; i < j; i++) {
-    var $newMsg = this.newMsg(lastContent, lastUser)
+    var msgWrapperUser = $msgWrapper[i].getAttribute('user')
+    var $newMsg = this.newMsg(lastContent, lastUser, msgWrapperUser)
     $msgWrapper[i].appendChild($newMsg)
   }
 }
-MsgView.prototype.newMsg = function(lastContent, lastUser) {
+MsgView.prototype.newMsg = function(lastContent, lastUser, msgWrapperUser) {
   var msg = document.createElement('div')
-  var that = this
 
-  // console.log(lastUser)
-  console.log(that.user)
-  if(this.user == lastUser) {
-    // msg.setAttribute('')
-  }
-  msg.setAttribute('class', 'msg-item')
   msg.textContent = lastContent
+  msg.className += 'msg-item'
+  if(msgWrapperUser == lastUser) {
+    msg.className += ' msg-self'
+  }
 
   return msg
 }
@@ -144,9 +137,9 @@ MsgView.prototype.newMsg = function(lastContent, lastUser) {
 
 
 function App() {
-  this.user1 = new Msg('Peter')
+  var user1 = new Msg('Peter')
   var user2 = new Msg('Frank')
-  document.body.append(this.user1.$elem)
+  document.body.append(user1.$elem)
   document.body.append(user2.$elem)
 
   // var msgBox = new MsgBox()
