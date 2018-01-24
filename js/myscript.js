@@ -55,10 +55,22 @@ Msg.prototype.send = function(title) {
   General.data.push($item)
 
   // New Msg ID
-  this.msgId ++
+  // this.msgId ++
 
   // Update Msg
-  this.msgView.update()
+  this.msgView.update($item)
+}
+Msg.prototype.recoverMsg = function() {
+  var msgData = General.data
+  if (msgData.length > 0) {
+    for (var i = 0; i < msgData.length; i++) {
+      // this.msgView.update()
+      this.msgView.firstUpdate(msgData[i])
+    }
+  }
+  else {
+    console.log('no data')
+  }
 }
 
 // MsgItem
@@ -91,13 +103,10 @@ MsgView.prototype.buildElem = function(user) {
 //     console.log('work')
 //   }
 // }
-MsgView.prototype.update = function() {
-  var id = General.id
-  var data = General.data
-  var last = data.length - 1
-  var lastContent = data[last].content
-  var lastUser = data[last].user
-  var msgId = data[last].id
+MsgView.prototype.update = function(msgItem) {
+  var msgId      = msgItem.id
+  var msgUser    = msgItem.user
+  var msgContent = msgItem.content
 
   // Add new Msg  
   var $msgWrapper = document.querySelectorAll('.msg-wrapper')
@@ -105,45 +114,77 @@ MsgView.prototype.update = function() {
   // Put the new Msg
   for (var i = 0, j = $msgWrapper.length; i < j; i++) {
     var msgWrapperUser = $msgWrapper[i].getAttribute('user')
-    var $newMsg = this.newMsg(lastContent, lastUser, msgWrapperUser)
+    var $newMsg = this.newMsg(msgContent, msgUser, msgWrapperUser)
     $msgWrapper[i].appendChild($newMsg)
   }
 }
-MsgView.prototype.newMsg = function(lastContent, lastUser, msgWrapperUser) {
+// TEMP
+MsgView.prototype.firstUpdate = function(msgItem) {
+  var msgId      = msgItem.id
+  var msgUser    = msgItem.user
+  var msgContent = msgItem.content
+
+  // Add new Msg  
+  var $msgWrapper = this.$elem
+
+  // Put the new Msg
+  var msgWrapperUser = $msgWrapper.getAttribute('user')
+  var $newMsg = this.newMsg(msgContent, msgUser, msgWrapperUser)
+  $msgWrapper.appendChild($newMsg)
+}
+
+MsgView.prototype.newMsg = function(msgContent, msgUser, msgWrapperUser) {
+
   var msg = document.createElement('div')
 
-  msg.textContent = lastContent
+  msg.textContent = msgContent
   msg.className += 'msg-item'
-  if(msgWrapperUser == lastUser) {
+  if (msgWrapperUser == msgUser) {
     msg.className += ' msg-self'
   }
-
   return msg
 }
 
 
 // LocalStorage
-// function LocalStorage() {
-//   var data = JSON.stringify(general.data)
-//   localStorage.setItem('msgData', data)
-// }
-// function recoverLocalStorage() {
-//   if (localStorage.msgData) {
-//     var recoverTodo = JSON.parse(localStorage.msgData)
-//     general.todoTemp = recoverTodo
-//     general.globalID = recoverTodo.length
-//   }
-// }
+function LocalStorage() {
+  var data = JSON.stringify(General.data)
+  localStorage.setItem('msgData', data)
+}
+
+// RecoverData
+function RecoverData() {
+  if (localStorage.msgData != '[]') {
+    var recoverMsgData = JSON.parse(localStorage.msgData)
+    General.data = recoverMsgData
+    // General.id = recoverMsgData[recoverMsgData.length - 1].id
+    var x = recoverMsgData.length - 1
+    console.log(localStorage.msgData)
+
+  } else {
+    console.log('no data')
+  }
+}
+
 
 
 function App() {
+
+  // Recover Data
+  RecoverData()
+
   var user1 = new Msg('Peter')
   var user2 = new Msg('Frank')
   document.getElementById('msg').append(user1.$elem)
   document.getElementById('msg').append(user2.$elem)
+
+  // Recover Data user
+  user1.recoverMsg()
+  user2.recoverMsg()
 
   // var msgBox = new MsgBox()
   // document.body.append(msgBox.$elem)
 }
 
 window.app = new App()
+window.onbeforeunload = LocalStorage
