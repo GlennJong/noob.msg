@@ -6,7 +6,7 @@ General = {
 function Msg(user) {
   // Define basic
   this.user  = user
-  this.msgId = General.id 
+  this.msgId = General.id
   this.msgView = new MsgView(this.user)
   this.$elem = this.buildElem()
 
@@ -22,7 +22,6 @@ Msg.prototype.buildElem = function() {
   // container
   $container.setAttribute('id','container')
   $container.setAttribute('class','msg-container')
-  // $container.setAttribute('name', this.user)
 
   // input
   $input.setAttribute('type', 'text')
@@ -50,12 +49,16 @@ Msg.prototype.bindEvents = function() {
   });
 }
 Msg.prototype.send = function(title) {
+  // New Msg ID
+  this.msgId ++
+
   // Push Data
-  var $item = new MsgItem(title, this.user)
+  var $item = new MsgItem(title, this.user, this.msgId)
   General.data.push($item)
 
-  // New Msg ID
-  // this.msgId ++
+  // console.log(General.id)
+  // console.log(this.msgId)
+  console.log(General.data)
 
   // Update Msg
   this.msgView.update($item)
@@ -74,20 +77,24 @@ Msg.prototype.recoverMsg = function() {
 }
 
 // MsgItem
-function MsgItem(title, user) {
+function MsgItem(title, user, msgId) {
   this.user = user
   this.content = title
+  this.msgId = msgId
   this.id = General.id ++
   return this
 }
 
 // MsgView
 function MsgView(user) {
+  this.user = user
   this.$elem = this.buildElem(user)
-  this.id = General.id
-
   // Time Update
-  // this.timeUpdate()
+
+  console.log(General.data)
+  if (General.data.length > 0) {
+    this.timeUpdate()
+  }
 }
 MsgView.prototype.buildElem = function(user) {
   var $container  = document.createElement('div')
@@ -97,14 +104,25 @@ MsgView.prototype.buildElem = function(user) {
 
   return $container
 }
-// MsgView.prototype.timeUpdate = function() {
-//   setInterval(this.update.bind(this), 5000)
-//   if (this.id != General.id) {
-//     console.log('work')
-//   }
-// }
+MsgView.prototype.timeUpdate = function() {
+
+  var that = this
+  var lastMsg = General.data[General.data.length - 1]
+  setInterval(function() {
+    if (lastMsg.user == that.user) {
+      // console.log(that.msgId)
+    } else {
+    }
+  }, 5000)
+}
+MsgView.prototype.print = function() {
+
+}
+
 MsgView.prototype.update = function(msgItem) {
-  var msgId      = msgItem.id
+  // Msg ID in Viewer
+  this.msgId = msgItem.id
+
   var msgUser    = msgItem.user
   var msgContent = msgItem.content
 
@@ -157,9 +175,7 @@ function RecoverData() {
   if (localStorage.msgData != '[]') {
     var recoverMsgData = JSON.parse(localStorage.msgData)
     General.data = recoverMsgData
-    // General.id = recoverMsgData[recoverMsgData.length - 1].id
-    var x = recoverMsgData.length - 1
-    console.log(localStorage.msgData)
+    General.id = recoverMsgData.length
 
   } else {
     console.log('no data')
@@ -182,8 +198,6 @@ function App() {
   user1.recoverMsg()
   user2.recoverMsg()
 
-  // var msgBox = new MsgBox()
-  // document.body.append(msgBox.$elem)
 }
 
 window.app = new App()
