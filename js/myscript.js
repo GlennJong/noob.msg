@@ -54,20 +54,17 @@ Msg.prototype.send = function(title) {
 
   // Push Data
   var $item = new MsgItem(title, this.user, this.msgId);
+
   General.data.push($item);
-
   console.log(General.data);
-
   // Update Msg
-  this.msgView.update($item);
+  // this.msgView.update();
 }
 Msg.prototype.recoverMsg = function() {
   var msgData = General.data;
   if (msgData.length > 0) {
-    for (var i = 0; i < msgData.length; i++) {
-      // this.msgView.update()
-      this.msgView.firstUpdate(msgData[i]);
-    }
+    this.msgView.update();
+    this.msgView.lastMax = General.data.length;
   }
   else {
     console.log('no data');
@@ -89,7 +86,6 @@ function MsgView(user) {
   this.$elem = this.buildElem(user);
   this.lastMax = 0;
 
-
   console.log(General.data)
   if (General.data.length > 0) {;
     this.timeUpdate();
@@ -110,48 +106,53 @@ MsgView.prototype.timeUpdate = function() {
   setInterval(function() {
     var lastMsg = General.data[General.data.length - 1];
     if (lastMsg.id > that.lastMax) {
+      that.update()
       that.lastMax = lastMsg.id
-      that.update2(that.lastMax)
       console.log(that.lastMax)
       return
     }
-  }, 5000)
+    else {
+      console.log('no more Message')
+    }
+  }, 1000)
 }
+
 MsgView.prototype.update = function() {
-  
-}
-
-MsgView.prototype.update = function(msgItem) {
   // Msg ID in Viewer
-  this.msgId = msgItem.id;
-
-  var msgUser    = msgItem.user;
-  var msgContent = msgItem.content;
-
-  // Add new Msg  
-  var $msgWrapper = document.querySelectorAll('.msg-wrapper')
-
-  // Put the new Msg
-  for (var i = 0, j = $msgWrapper.length; i < j; i++) {
-    var msgWrapperUser = $msgWrapper[i].getAttribute('user');
-    var $newMsg = this.newMsg(msgContent, msgUser, msgWrapperUser);
-    $msgWrapper[i].appendChild($newMsg);
-  }
-}
-// TEMP
-MsgView.prototype.firstUpdate = function(msgItem) {
-  var msgId      = msgItem.id;
-  var msgUser    = msgItem.user;
-  var msgContent = msgItem.content;
+  var lastMsg = General.data[General.data.length - 1];
 
   // Add new Msg  
   var $msgWrapper = this.$elem;
 
-  // Put the new Msg
-  var msgWrapperUser = $msgWrapper.getAttribute('user');
-  var $newMsg = this.newMsg(msgContent, msgUser, msgWrapperUser);
-  $msgWrapper.appendChild($newMsg);
+  for (var i = this.lastMax; i < lastMsg.id; i++) {
+
+    console.log('lastMax:' + this.lastMax +' ;lastMsgId:' + lastMsg.id)
+
+    var msgItem    = General.data[i + 1]
+    var msgUser    = msgItem.user;
+    var msgContent = msgItem.content;
+    var msgWrapperUser = this.user;
+    var $newMsg = this.newMsg(msgContent, msgUser, msgWrapperUser);
+
+    // Put the new Msg
+    $msgWrapper.appendChild($newMsg);
+  }
+
 }
+// TEMP
+// MsgView.prototype.firstUpdate = function(msgItem) {
+//   var msgId      = msgItem.id;
+//   var msgUser    = msgItem.user;
+//   var msgContent = msgItem.content;
+
+//   // Add new Msg  
+//   var $msgWrapper = this.$elem;
+
+//   // Put the new Msg
+//   var msgWrapperUser = $msgWrapper.getAttribute('user');
+//   var $newMsg = this.newMsg(msgContent, msgUser, msgWrapperUser);
+//   $msgWrapper.appendChild($newMsg);
+// }
 
 MsgView.prototype.newMsg = function(msgContent, msgUser, msgWrapperUser) {
 
@@ -183,8 +184,6 @@ function RecoverData() {
     console.log('no data');
   }
 }
-
-
 
 function App() {
 
