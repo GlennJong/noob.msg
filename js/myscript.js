@@ -14,8 +14,11 @@ function Msg(user) {
   this.bindEvents();
 }
 Msg.prototype.buildElem = function() {
+  var $phone      = document.createElement('div');
   var $container  = document.createElement('div');
+  var $inputFooter= document.createElement('div');
   var $input      = document.createElement('input');
+  var $sendBtn    = document.createElement('button');
   var $userName   = document.createElement('h1');
   var $msgView    = this.msgView.$elem;
 
@@ -24,22 +27,32 @@ Msg.prototype.buildElem = function() {
   $container.setAttribute('class','msg-container');
 
   // input
+  $inputFooter.setAttribute('class', 'msg-footer');
+  $sendBtn.setAttribute('class', 'msg-send');
+  $sendBtn.setAttribute('id', 'msgSend')
   $input.setAttribute('type', 'text');
   $input.setAttribute('id',   'msgInput');
   $input.setAttribute('class','msg-input');
 
+  $inputFooter.append($input)
+  $inputFooter.append($sendBtn)
+
   // msgContent
   $userName.textContent = this.user;
-  $container.append($msgView);
   $container.append($userName);
-  $container.append($input);
+  $container.append($msgView);
+  $container.append($inputFooter);
 
-  return $container;
+  $phone.setAttribute('class', 'msg-phone')
+  $phone.append($container)
+
+  return $phone;
 }
 Msg.prototype.bindEvents = function() {
   var that = this;
   var $input = that.$elem.querySelector('#msgInput');
-  $input.addEventListener("keydown", function (e) {
+  var $send  = that.$elem.querySelector('#msgSend')
+  $input.addEventListener('keydown', function (e) {
       if (e.keyCode === 13 && $input.value != '') {
 
         that.send($input.value);
@@ -47,6 +60,13 @@ Msg.prototype.bindEvents = function() {
         $input.value = '';
       }
   });
+  $send.onclick = function() {
+    if ($input.value != '') {
+      that.send($input.value);
+      // Clear input
+      $input.value = '';
+    }
+  }
 }
 Msg.prototype.send = function(title) {
   // New Msg ID
@@ -83,14 +103,20 @@ function MsgView(user) {
 }
 MsgView.prototype.buildElem = function(user) {
   var $container  = document.createElement('div');
+  var $list  = document.createElement('div');
+
   $container.setAttribute('id', 'msgWrapper');
   $container.setAttribute('class', 'msg-wrapper');
   $container.setAttribute('user', user);
 
+  $list.setAttribute('id', 'msgList');
+  $list.setAttribute('class', 'msg-list');
+
+  $container.append($list);
+
   return $container;
 }
 MsgView.prototype.timeUpdate = function() {
-
   // Time Update
   var that = this;
   setInterval(function() {
@@ -109,6 +135,7 @@ MsgView.prototype.update = function() {
 
   // Add new Msg  
   var $msgWrapper = this.$elem;
+  var $msgList = this.$elem.querySelector('#msgList')
 
   for (var i = this.lastMax; i < lastMsg.id; i++) {
 
@@ -119,7 +146,10 @@ MsgView.prototype.update = function() {
     var $newMsg = this.newMsg(msgContent, msgUser, msgWrapperUser);
 
     // Put the new Msg
-    $msgWrapper.appendChild($newMsg);
+    $msgList.appendChild($newMsg);
+
+    // Scroll to Bottom
+    $msgWrapper.scrollTo(0, $msgList.clientHeight);
   }
 
 }
@@ -169,3 +199,4 @@ function App() {
 
 window.app = new App();
 window.onbeforeunload = LocalStorage;
+

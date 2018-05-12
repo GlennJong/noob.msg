@@ -3,74 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <title>Document</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-    }
-    .msg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      right: 0;
-    }
-    .msg-container {
-      float: left;
-      position: relative;
-      border: 1px solid hsl(0, 0%, 75%);
-      margin-right: 24px;
-      width: 400px;
-      height: 500px;
-      box-sizing: border-box;
-    }
-    .msg-container h1 {
-      display: none;
-    }
-    .msg-wrapper {
-      padding: 12px;
-      overflow: hidden;
-      box-sizing: border-box;
-    }
-    .msg-wrapper .msg-item {
-      clear: both;
-      float: left;
-    }
-    .msg-wrapper .msg-self {
-      float: right;
-    }
-    .msg-input {
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      border: 0;
-      border-top: 1px solid hsl(0, 0%, 75%);
-      padding: 4px 6px;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    .msg-item {
-      margin-bottom: 8px;
-      padding: 4px 8px;
-      border-radius: 12px 12px 12px 0;
-      background: hsl(0, 0%, 65%);
-      color: #FFF;
-    }
-    .msg-self {
-      border-radius: 12px 12px 0 12px;
-      background: hsl(210, 85%, 55%);
-      color: #FFF;
-    }
-    #temp {
-      position: absolute;
-      bottom: 12px;
-      left: 50%;
-    }
-  </style>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <div id="msg" class="msg"></div>
-  <button id="temp">TEMP</button>
   <script src="js/myscript.js"></script>
 </body>
 </html>
